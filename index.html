@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title> Neighborhood Map - Udacity Project 5 </title>
+	<!-- Write your comments here -->
+	<meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+	<link href='https://fonts.googleapis.com/css?family=Lato:400,300italic' rel='stylesheet'>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<!-- this is a form so you can say on submit pass the query reqest to
+		runQuery() -->
+	<section id= "search-container">
+		<label for="Search-box" class="search"> Search </label>
+
+		<input type="text" id="Search-box" placeholder="Search for a winery listed below" size="28"
+		autocomplete = "on" data-bind="value: searchTxt, valueUpdate: 'afterkeydown'">
+	</section>
+	<div id ="map-list-container">
+		<ul id="list-view" data-bind="foreach: filteredSearch()">
+			<li class="list-view-item" data-bind="text: $data,event:{mouseover: $parent.overVenueItem.bind($data, $index()),mouseout: $parent.outVenueItem.bind($data, $index()),click:$parent.clickVenueItem.bind($data,$index())}">
+			</li>
+		</ul>
+		<div id= "map"></div>
+	</div>
+<script src="js/lib/knockout-3.2.0.js"></script>
+<script src="js/lib/jquery.min.js"></script>
+<script  src="js/app2.js"></script>
+<!-- Load Google Maps asynchronously credit https://discussions.udacity.com/t/handling-google-maps-in-async-and-fallback/34282 -->
+<script async src="http://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap"
+ onerror="googleError()"></script>
+</body>
+</html>
