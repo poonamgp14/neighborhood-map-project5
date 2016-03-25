@@ -17,6 +17,30 @@ var request = {
 //viewmodel for the application
 var MapViewModel = function() {
 	var self = this;
+    var geocoder = new google.maps.Geocoder();
+
+    document.getElementById('submit').addEventListener('click', function() {
+          self.geocodeAddress(geocoder, map);
+    });
+    
+    self.geocodeAddress = function(geocoder, resultsMap) {
+        var address = document.getElementById('address').value;
+        geocoder.geocode({'address': address}, function(results, status) {
+          if (status === google.maps.GeocoderStatus.OK) {
+            resultsMap.setCenter(results[0].geometry.location);
+            
+            request.location = {lat:results[0].geometry.location.lat(),
+                                lng:results[0].geometry.location.lng()};
+            self.searchTxt('');
+            self.venuesArray([]);
+            self.clearAllMarkers();
+            markers = [];
+            self.runQuery(map);
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      },
 	self.runQuery = function(map){
 		//runs PlacesServiceStatus.textSearch() method for request.query
 		var service = new google.maps.places.PlacesService(map);
@@ -25,6 +49,7 @@ var MapViewModel = function() {
 
 	self.callback = function(resultsFromQuery,status){
 		if (status === google.maps.places.PlacesServiceStatus.OK){
+            //console.log(resultsFromQuery);
 			for (i = 0,len = resultsFromQuery.length; i < len; i++){
 				self.pushVenuesArray(resultsFromQuery[i]);
 				self.createMarker(resultsFromQuery[i]);
@@ -35,6 +60,10 @@ var MapViewModel = function() {
 	//fills in the observable array of places for every result from
 	//PlacesServiceStatus.textSearch() method
 	self.pushVenuesArray = function(place){
+        /*console.log(place.name)
+        console.log('------');
+        console.log(place)
+        console.log('------');*/
 		self.venuesArray.push(place.name);
 	},
 	//creates marker and infowindow on clicking marker
@@ -56,31 +85,31 @@ var MapViewModel = function() {
 	self.doAjaxCall = function(place,marker){
 
 		//FourSquare Search API uses following URI structure
-		fsURI = 'https://api.foursquare.com/v2/venues/search?client_id='+ fsClientID +
-		'&client_secret=' + fsClientSecret + '&v=20150915&ll=' + request.location.lat
-		+ ',' + request.location.lng +
+		fsURI = 'https://api.foursquare.com/v2/venues/search?client_id='+ fsClientID + '&client_secret=' + fsClientSecret + '&v=20150915&ll=' + place.geometry.location.lat()
+		+ ',' + place.geometry.location.lng() +
 		'&query=' + place.name + '&limit=1';
-
+        
 		$.getJSON(fsURI,function(data){
 				venuesDetails = data.response.venues[0];
 
 				if (venuesDetails){
 					self.venueAddress(venuesDetails.location.hasOwnProperty('address') ? venuesDetails.location.address : 'Address not found');
-					self.venueURL(venuesDetails.hasOwnProperty('url') ? venuesDetails.url : 'URL not found');
+					
+                    self.venueURL(venuesDetails.hasOwnProperty('url') ? venuesDetails.url : 'URL not found');
 
 					if (self.venueURL() === 'URL not found'){
 						//console.log("entered")
-						windowStr = place.name + '<div class="window-container">Information on FourSquare:</div><p>'+ self.venueAddress() +'</p>'
-						+ '<p>' + self.venueURL() +'</p>';
+						windowStr = '<span class="place">' + place.name +'</span>' + '<div class="window-container">Information on FourSquare:<span class="fs-info"><p class="address"> Address: '+ self.venueAddress() +'</p>'
+						+ '<span>URL: ' + self.venueURL() +'</span>' + '<p class="type"> Type: '+ venuesDetails.categories[0].name  +'</p></span></div>' ;
 					}
 					else{
-						windowStr = place.name + '<div class="window-container">Information on FourSquare:</div><p class="address">'+ self.venueAddress() +'</p>'
-						+ '<a href=' + self.venueURL() + '>' + self.venueURL() +'</a>';
+						windowStr = '<span class="place">' + place.name +'</span>' + '<div class="window-container">Information on FourSquare:<span class="fs-info"><p class="address">Address: '+ self.venueAddress() +'</p>'
+						+ '<a href=' + self.venueURL() + '>' + self.venueURL() +'</a>' + '<p class="type"> Type: '+ venuesDetails.categories[0].name  +'</p></span></div>';
 					}
 				}
 				else{
-					console.log('No result from FourSquare');
-					windowStr = place.name + '<p class="window-container">No result from FourSquare</p>';
+					console.log(place.name + ' is not found in FourSquare database');
+					windowStr = place.name + '<p class="window-container">Place is not found in FourSquare database</p>';
 				}
 				marker.windowStrProp = windowStr;
 				google.maps.event.addListener(marker,'click',function(marker,windowStr){
@@ -95,8 +124,7 @@ var MapViewModel = function() {
 
 
 			}).error(function(e){
-					alert('Foursquare data is unavailable. Please try refreshing later.');
-					return false;
+					document.getElementById("error").innerHTML = "<h4 style='color: #fff'>Foursquare data is unavailable. Please try refreshing later.</h4>"
 			});
 		},
 
@@ -204,6 +232,8 @@ function initMap(){
         google.maps.event.trigger(map,'resize');
         map.setCenter(center);
     });
+    
+    
 
 
 	ko.applyBindings(new MapViewModel());

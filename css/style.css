@@ -7,6 +7,12 @@ html {
 	font-family: 'Lato', sans-serif;
 	overflow-y: hidden;
 }
+.title{
+    color: aquamarine;
+    margin-top: 0;
+    text-align: center;
+    font-family: 'Shadows Into Light', cursive;
+}
 
 #search-container {
 	width: 70%;
@@ -51,12 +57,31 @@ html {
 	cursor:pointer;
 }
 
+#floating-panel {
+    position: absolute;
+    top: 25%;
+    right: 5%;
+    z-index: 5;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #999;
+    text-align: center;
+    line-height: 30px;
+    padding-left: 10px;
+}
+.place{
+    font-size: 20px;
+    color:cadetblue;
+    font-weight: 900;
+}
 .address{
 	margin: 5px 0;
 }
 .window-container{
 	margin: 5px 0 0 0;
-	font-weight: 400;
+	font-weight: 900;
+    color: darkred;
+    font-size: 16px;
 }
 
 .error{
@@ -64,9 +89,27 @@ html {
 	font-weight: 900px;
 }
 
+.fs-info{
+    color: black;
+    font-weight: 400;
+}
+
+.type{
+   margin-top: 5px; 
+}
+
 @media only screen and (max-width: 550px) {
+    .title{
+        font-size: 20px;
+    }
+    
+    #floating-panel{
+        width: 40%;
+        top: 18%;
+        right: 0%;
+    }
 	#list-view {
-	padding: 0;
+		padding: 0;
 	}
 
 	.list-view-item {

@@ -3,27 +3,32 @@
 <head>
 	<meta charset="UTF-8">
 	<title> Neighborhood Map - Udacity Project 5 </title>
-	<!-- Write your comments here -->
 	<meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
 	<link href='https://fonts.googleapis.com/css?family=Lato:400,300italic' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-	<!-- this is a form so you can say on submit pass the query reqest to
-		runQuery() -->
+    <h1 class="title">Hey there! Wineries in mah city! You can search for wineries in your city too !</h1>
 	<section id= "search-container">
 		<label for="Search-box" class="search"> Search </label>
 
-		<input type="text" id="Search-box" placeholder="Search for a winery listed below" size="28"
+		<input type="text" id="Search-box" placeholder="Search for a winery listed below" size="25"
 		autocomplete = "on" data-bind="value: searchTxt, valueUpdate: 'afterkeydown'">
 	</section>
+	<div id="error"></div>
 	<div id ="map-list-container">
 		<ul id="list-view" data-bind="foreach: filteredSearch()">
 			<li class="list-view-item" data-bind="text: $data,event:{mouseover: $parent.overVenueItem.bind($data, $index()),mouseout: $parent.outVenueItem.bind($data, $index()),click:$parent.clickVenueItem.bind($data,$index())}">
 			</li>
 		</ul>
+        <div id="floating-panel">
+            <input id="address" type="textbox" value="Saint Louis, MO">
+            <input id="submit" type="button" value="Enter your city name">
+        </div>
 		<div id= "map"></div>
 	</div>
+
 <script src="js/lib/knockout-3.2.0.js"></script>
 <script src="js/lib/jquery.min.js"></script>
 <script  src="js/app2.js"></script>
