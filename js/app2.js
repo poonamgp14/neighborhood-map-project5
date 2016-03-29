@@ -8,8 +8,7 @@ var request = {
 	infoWindow,
 	marker,markers=[],
 	clickedVenue = {},
-	fsClientID = '44I1K1WPRHS4J0I1JH4KQE3XJGLNMZH3V5JRZBYMS5LD2M2N',
-	fsClientSecret = 'LM3QTMM44PK2PRHZCZR50TBMBDCONAWE5SRCFZYDDXPCIPKW',
+
 	fsURI = '',
 	windowStr = '',
 	filteredArray=[],filteredMarkerPos;
@@ -83,6 +82,8 @@ var MapViewModel = function() {
 	},//CLOSES createMarker
 
 	self.doAjaxCall = function(place,marker){
+       var 	fsClientID = '44I1K1WPRHS4J0I1JH4KQE3XJGLNMZH3V5JRZBYMS5LD2M2N',
+	       fsClientSecret = 'LM3QTMM44PK2PRHZCZR50TBMBDCONAWE5SRCFZYDDXPCIPKW'
 
 		//FourSquare Search API uses following URI structure
 		fsURI = 'https://api.foursquare.com/v2/venues/search?client_id='+ fsClientID + '&client_secret=' + fsClientSecret + '&v=20150915&ll=' + place.geometry.location.lat()
